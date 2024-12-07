@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IVF Success Calculator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            width: 45%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .success-rate {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .error {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: red;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <script>
+        function filterIvfOptions() {
+            const ownEggs = document.querySelector('input[name="usingOwnEggs"]:checked').value;
+            const ivfPastDropdown = document.getElementById("attemptedIvf");
+
+            ivfPastDropdown.innerHTML = "";
+
+            if (ownEggs === "false") {
+                ivfPastDropdown.innerHTML += `<option value="N/A" selected>Not Applicable</option>`;
+            } else {
+                ivfPastDropdown.innerHTML += `<option value="TRUE" th:selected="${attemptedIvf == 'TRUE'}">Yes</option>`;
+                ivfPastDropdown.innerHTML += `<option value="FALSE" th:selected="${attemptedIvf == 'FALSE'}">No</option>`;
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+<h1 style="text-align: center;">IVF Success Calculator</h1>
+
+<form action="/calculate" method="post">
+    <div class="container">
+        <div class="section">
+            <h2>Background and History</h2>
+
+            <label>How old are you? (20-50 years):
+                <input type="number" name="age" min="20" max="50" required th:value="${age}">
+            </label>
+            <br><br>
+
+            <label>How much do you weigh? (80-300 lbs):
+                <input type="number" name="weightInLbs" min="80" max="300" required th:value="${weightInLbs}">
+            </label>
+            <br><br>
+
+            <label>How tall are you?</label>
+            <input type="number" name="heightFeet" min="3" max="8" placeholder="Feet" required th:value="${heightFeet}">
+            <input type="number" name="heightInches" min="0" max="11" placeholder="Inches" required th:value="${heightInches}">
+            <br><br>
+
+            <label>Are you planning to use your own eggs in the IVF process?
+                <input type="radio" name="usingOwnEggs" value="true" th:checked="${usingOwnEggs == 'true'}" onclick="filterIvfOptions()"> Yes
+                <input type="radio" name="usingOwnEggs" value="false" th:checked="${usingOwnEggs == 'false'}" onclick="filterIvfOptions()"> No
+            </label>
+            <br><br>
+
+            <label>Have you used IVF in the past?</label><br>
+            <select name="attemptedIvf" id="attemptedIvf">
+                <option value="TRUE" th:selected="${attemptedIvf == 'TRUE'}">Yes</option>
+                <option value="FALSE" th:selected="${attemptedIvf == 'FALSE'}">No</option>
+            </select>
+            <br><br>
+
+            <label>Do you know the reason for infertility?
+                <input type="radio" name="reasonForInfertilityKnown" value="true" th:checked="${reasonForInfertilityKnown == 'true'}"> Yes
+                <input type="radio" name="reasonForInfertilityKnown" value="false" th:checked="${reasonForInfertilityKnown == 'false'}"> No
+            </label>
+            <br><br>
+        </div>
+
+        <div class="section">
+            <h2>Diagnosis and Plan</h2>
+
+            <label>Tubal Factor:
+                <input type="checkbox" name="tubalFactor" value="true" th:checked="${tubalFactor}">
+            </label>
+            <br><br>
+
+            <label>Male Factor Infertility:
+                <input type="checkbox" name="maleFactorInfertility" value="true" th:checked="${maleFactorInfertility}">
+            </label>
+            <br><br>
+
+            <label>Endometriosis:
+                <input type="checkbox" name="endometriosis" value="true" th:checked="${endometriosis}">
+            </label>
+            <br><br>
+
+            <label>Ovulatory Disorder:
+                <input type="checkbox" name="ovulatoryDisorder" value="true" th:checked="${ovulatoryDisorder}">
+            </label>
+            <br><br>
+
+            <label>Diminished Ovarian Reserve:
+                <input type="checkbox" name="diminishedOvarianReserve" value="true" th:checked="${diminishedOvarianReserve}">
+            </label>
+            <br>
+            <br>
+
+            <label>Uterine Factor:
+                <input type="checkbox" name="uterineFactor" value="true" th:checked="${uterineFactor}">
+            </label>
+            <br>
+            <br>
+
+            <label>Other Reason:
+                <input type="checkbox" name="otherReason" value="true" th:checked="${otherReason}">
+            </label>
+            <br>
+            <br>
+
+            <label>(OR)</label><br><br>
+
+            <label>Unexplained Infertility:
+                <input type="checkbox" name="unexplainedInfertility" value="true" th:checked="${unexplainedInfertility}">
+            </label>
+            <br>
+            <br>
+
+            <label>Number of prior pregnancies:
+                <select name="priorPregnancies">
+                    <option value="0" th:selected="${priorPregnancies == 0}">0</option>
+                    <option value="1" th:selected="${priorPregnancies == 1}">1</option>
+                    <option value="2" th:selected="${priorPregnancies >= 2}">2 or more</option>
+                </select>
+            </label>
+            <br><br>
+
+            <label>Number of live births:
+                <select name="liveBirths">
+                    <option value="0" th:selected="${liveBirths == 0}">0</option>
+                    <option value="1" th:selected="${liveBirths == 1}">1</option>
+                    <option value="2" th:selected="${liveBirths >= 2}">2 or more</option>
+                </select>
+            </label>
+            <br><br>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button type="submit">Calculate Success</button>
+    </div>
+</form>
+
+<div th:if="${successRate != null}" class="success-rate">
+    Success Rate: <span th:text="${successRate + '%'}"></span>
+</div>
+
+<div th:if="${error != null}" class="error">
+    Error: <span th:text="${error}"></span>
+</div>
+</body>
+
+</html>
+
+
